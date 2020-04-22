@@ -67,6 +67,10 @@ export default {
     this.getHomeGoods("pop");
     this.getHomeGoods("new");
     this.getHomeGoods("sell");
+    this.$bus.$on("imageLoadItem",() => {
+      // console.log("------");   
+      this.$refs.scroll.refresh()
+    })
   },
   methods: {
     // tabbar点击切换
@@ -88,15 +92,15 @@ export default {
     backClick() {
       this.$refs.scroll.backTop(0, 0, 500);
     },
+    // 指定位置回到顶部
     showPosition(position) {
       this.isShow = -position.y > 1000;
     },
     // 加载更多数据
     loadMore() {
       this.getHomeGoods(this.currentGoods);
-      setTimeout(() => {
-        this.$refs.scroll.finishPullUp();
-      }, 2000);
+      this.$refs.scroll.finishPullUp();
+     
     },
     /**
      * 网络请求有关的方法
@@ -148,6 +152,7 @@ export default {
   top: 44px;
   z-index: 9;
 }
+/* scroll区域 */
 .content {
   position: absolute;
   top: 44px;

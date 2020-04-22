@@ -7,57 +7,61 @@
 </template>
 
 <script>
-import BScroll from "better-scroll"
+import BScroll from "better-scroll";
 
-import {getHomeGoods} from "network/home"
+import { getHomeGoods } from "network/home";
 export default {
-  name:"scroll",
-  props:{
-    probeType:{
-      type:Number,
-      default:0,  
+  name: "scroll",
+  props: {
+    probeType: {
+      type: Number,
+      default: 0
     },
-   pullUpLoad:false
+    pullUpLoad: false
   },
-  data () {
+  data() {
     return {
-      scroll:null,      
-      currentPage:1,
-      goods:[]
-    }
+      scroll: null,
+      currentPage: 1,
+      goods: []
+    };
   },
   components: {
     BScroll
   },
-  mounted () {
-    this.scroll = new BScroll(this.$refs.wrapper,{
+  mounted() {
+    (this.scroll = new BScroll(this.$refs.wrapper, {
       // 开启原生点击
-      click:true,
+      click: true,
       // 侦听类型
-      probeType:this.probeType,
+      probeType: this.probeType,
       // 开启上拉加载
-      pullUpLoad:this.pullUpLoad
-    }),
-    this.scroll.on("scroll",(position) => {
-      // console.log(position);
-      this.$emit("showPosition",position) 
-    }),
-    // 监听上拉事件
-    this.scroll.on("pullingUp",() => {
-      this.$emit("pullingUp")
-      })
+      pullUpLoad: this.pullUpLoad
+    })),
+      this.scroll.on("scroll", position => {
+        // console.log(position);
+        this.$emit("showPosition", position);
+      }),
+      // 监听上拉事件
+      this.scroll.on("pullingUp", () => {
+        this.$emit("pullingUp");
+      });
   },
   methods: {
-    backTop(x,y,time){
-      this.scroll.scrollTo(x,y,time)
+    backTop(x, y, time) {
+      this.scroll.scrollTo(x, y, time);
     },
-    finishPullUp(){
-      this.scroll.finishPullUp()
+    finishPullUp() {
+      setTimeout(() => {
+        this.scroll.finishPullUp();
+      }, 2000);
+    },
+    refresh(){
+      this.scroll.refresh()
     }
   }
-}
+};
 </script>
 
 <style scoped>
-
 </style>
