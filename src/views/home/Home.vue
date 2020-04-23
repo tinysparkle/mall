@@ -3,6 +3,13 @@
     <NavBar class="home-nav">
       <h3 slot="center">购物街</h3>
     </NavBar>
+     <TabControl
+        :titles="['流行','新款','精选']"
+        @tabClick="tabClick"
+        :class="{tabControl:showNavBar}"
+        ref="tabControl1"
+        v-show="showNavBar"
+      />
     <Scroll
       class="content"
       ref="scroll"
@@ -11,10 +18,14 @@
       @showPosition="showPosition"
       @pullingUp="loadMore"
     >
-      <HomeSwiper :banners="banners" />
+      <HomeSwiper :banners="banners" @swiperImageLoad="swiperImageLoad"/>
       <Recommend :recommends="recommends" />
       <Feature />
-      <TabControl :titles="['流行','新款','精选']" @tabClick="tabClick" class="tab-control" />
+      <TabControl
+        :titles="['流行','新款','精选']"
+        @tabClick="tabClick"
+        ref="tabControl2"
+      />
       <GoodsList :goods="showGoods" />
     </Scroll>
 
@@ -35,6 +46,7 @@ import Recommend from "./childCpns/Recommend";
 import Feature from "./childCpns/FeatureView";
 //
 import { getMultiData, getHomeGoods } from "network/home";
+import { debounce } from "common/utils";
 export default {
   name: "Home",
   data() {
@@ -47,7 +59,9 @@ export default {
         sell: { page: 0, list: [] }
       },
       currentGoods: "pop",
-      isShow: false
+      isShow: false,
+      tabOffsetTop: 0,
+      showNavBar:false
     };
   },
   components: {
@@ -68,11 +82,13 @@ export default {
     this.getHomeGoods("new");
     this.getHomeGoods("sell");
   },
-  mounted() {    
-    const refresh = this.debounce(this.$refs.scroll.refresh,200)
+  mounted() {
+    // 监听图片的刷新
+    const refresh = debounce(this.$refs.scroll.refresh, 200);
     this.$bus.$on("imageLoadItem", () => {
-      refresh()
+      refresh();
     });
+   
   },
   methods: {
     // tabbar点击切换
@@ -89,6 +105,8 @@ export default {
           this.currentGoods = "sell";
           break;
       }
+      this.$refs.tabControl1.currentIndex = index
+      this.$refs.tabControl2.currentIndex = index
     },
     // 回到顶部
     backClick() {
@@ -96,22 +114,18 @@ export default {
     },
     // 指定位置回到顶部
     showPosition(position) {
-      this.isShow = -position.y > 1000;
+      this.isShow = -(position.y) > 1000;
+      this.showNavBar = -(position.y)>540
     },
     // 加载更多goods数据
     loadMore() {
       this.getHomeGoods(this.currentGoods);
       this.$refs.scroll.finishPullUp();
     },
-    // 防抖函数
-    debounce(func,delay) {
-      let timer = null
-      return (...args) => {
-        if(timer) clearTimeout(timer)
-        timer = setTimeout(() => {
-          func.apply(this,args)
-        },delay)
-      }
+    // 监听轮播图片加载
+    swiperImageLoad(){
+    // 获取tabcontroll的offsetTop
+      this.tabOffsetTop = this.$refs.tabControl2.$el.offsetTop;
     },
     /**
      * 网络请求有关的方法
@@ -158,9 +172,8 @@ export default {
   background-color: var(--color-tint);
   color: #fff;
 }
-.tab-control {
-  position: sticky;
-  top: 44px;
+.tabControl {
+  position: relative;
   z-index: 9;
 }
 /* scroll区域 */

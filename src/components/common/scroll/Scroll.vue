@@ -30,14 +30,14 @@ export default {
     BScroll
   },
   mounted() {
-    (this.scroll = new BScroll(this.$refs.wrapper, {
+    this.scroll = new BScroll(this.$refs.wrapper, {
       // 开启原生点击
       click: true,
       // 侦听类型
       probeType: this.probeType,
       // 开启上拉加载
       pullUpLoad: this.pullUpLoad
-    })),
+    }),
       this.scroll.on("scroll", position => {
         // console.log(position);
         this.$emit("showPosition", position);
@@ -56,10 +56,10 @@ export default {
         this.scroll.finishPullUp();
       }, 2000);
     },
-    refresh(){
-      console.log("-----");
+    refresh() {
+      // console.log("-----");
 
-      this.scroll.refresh()
+      this.scroll.refresh();
     }
   }
 };
