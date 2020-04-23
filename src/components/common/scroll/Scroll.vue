@@ -57,6 +57,8 @@ export default {
       }, 2000);
     },
     refresh(){
+      console.log("-----");
+
       this.scroll.refresh()
     }
   }

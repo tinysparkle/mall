@@ -67,10 +67,12 @@ export default {
     this.getHomeGoods("pop");
     this.getHomeGoods("new");
     this.getHomeGoods("sell");
-    this.$bus.$on("imageLoadItem",() => {
-      // console.log("------");   
-      this.$refs.scroll.refresh()
-    })
+  },
+  mounted() {    
+    const refresh = this.debounce(this.$refs.scroll.refresh,200)
+    this.$bus.$on("imageLoadItem", () => {
+      refresh()
+    });
   },
   methods: {
     // tabbar点击切换
@@ -96,11 +98,20 @@ export default {
     showPosition(position) {
       this.isShow = -position.y > 1000;
     },
-    // 加载更多数据
+    // 加载更多goods数据
     loadMore() {
       this.getHomeGoods(this.currentGoods);
       this.$refs.scroll.finishPullUp();
-     
+    },
+    // 防抖函数
+    debounce(func,delay) {
+      let timer = null
+      return (...args) => {
+        if(timer) clearTimeout(timer)
+        timer = setTimeout(() => {
+          func.apply(this,args)
+        },delay)
+      }
     },
     /**
      * 网络请求有关的方法
