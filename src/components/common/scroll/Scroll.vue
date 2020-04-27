@@ -48,7 +48,7 @@ export default {
       });
   },
   methods: {
-    backTop(x, y, time) {
+    backTo(x, y, time) {
       this.scroll.scrollTo(x, y, time);
     },
     finishPullUp() {
@@ -58,9 +58,12 @@ export default {
     },
     refresh() {
       // console.log("-----");
-
       this.scroll.refresh();
+    },
+    getScrollY(){
+     return this.scroll.y
     }
+
   }
 };
 </script>

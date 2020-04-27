@@ -16,6 +16,7 @@ export default {
   height: 49px;
   background-color: #f6f6f6;
   position: fixed;
+  z-index: 9;
   left: 0;
   right: 0;
   bottom: 0;

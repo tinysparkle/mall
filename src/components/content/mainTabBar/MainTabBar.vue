@@ -41,7 +41,7 @@ export default {
 </script>
 
 <style scoped>
-.mainTabBar {
-  z-index: 10;
-}
+/* .mainTabBar {
+  z-index: 9;
+} */
 </style>

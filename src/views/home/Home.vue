@@ -3,13 +3,13 @@
     <NavBar class="home-nav">
       <h3 slot="center">购物街</h3>
     </NavBar>
-     <TabControl
-        :titles="['流行','新款','精选']"
-        @tabClick="tabClick"
-        :class="{tabControl:showNavBar}"
-        ref="tabControl1"
-        v-show="showNavBar"
-      />
+    <TabControl
+      :titles="['流行','新款','精选']"
+      @tabClick="tabClick"
+      :class="{tabControl:showNavBar}"
+      ref="tabControl1"
+      v-show="showNavBar"
+    />
     <Scroll
       class="content"
       ref="scroll"
@@ -18,14 +18,10 @@
       @showPosition="showPosition"
       @pullingUp="loadMore"
     >
-      <HomeSwiper :banners="banners" @swiperImageLoad="swiperImageLoad"/>
+      <HomeSwiper :banners="banners" @swiperImageLoad="swiperImageLoad" />
       <Recommend :recommends="recommends" />
       <Feature />
-      <TabControl
-        :titles="['流行','新款','精选']"
-        @tabClick="tabClick"
-        ref="tabControl2"
-      />
+      <TabControl :titles="['流行','新款','精选']" @tabClick="tabClick" ref="tabControl2" />
       <GoodsList :goods="showGoods" />
     </Scroll>
 
@@ -61,7 +57,8 @@ export default {
       currentGoods: "pop",
       isShow: false,
       tabOffsetTop: 0,
-      showNavBar:false
+      showNavBar: false,
+      scrollY: 0
     };
   },
   components: {
@@ -88,7 +85,15 @@ export default {
     this.$bus.$on("imageLoadItem", () => {
       refresh();
     });
-   
+  },
+  activated() {
+    this.$refs.scroll.backTo(0, this.scrollY, 0);
+    this.$refs.scroll.refresh();  
+    // console.log(this.scrollY);
+  },
+  deactivated() {
+    // console.log(this.$refs.scroll.getScrollY());
+    this.scrollY = this.$refs.scroll.getScrollY();
   },
   methods: {
     // tabbar点击切换
@@ -105,17 +110,17 @@ export default {
           this.currentGoods = "sell";
           break;
       }
-      this.$refs.tabControl1.currentIndex = index
-      this.$refs.tabControl2.currentIndex = index
+      this.$refs.tabControl1.currentIndex = index;
+      this.$refs.tabControl2.currentIndex = index;
     },
     // 回到顶部
     backClick() {
-      this.$refs.scroll.backTop(0, 0, 500);
+      this.$refs.scroll.backTo(0, 0, 500);
     },
     // 指定位置回到顶部
     showPosition(position) {
-      this.isShow = -(position.y) > 1000;
-      this.showNavBar = -(position.y)>540
+      this.isShow = -position.y > 1000;
+      this.showNavBar = -position.y > 540;
     },
     // 加载更多goods数据
     loadMore() {
@@ -123,8 +128,8 @@ export default {
       this.$refs.scroll.finishPullUp();
     },
     // 监听轮播图片加载
-    swiperImageLoad(){
-    // 获取tabcontroll的offsetTop
+    swiperImageLoad() {
+      // 获取tabcontroll的offsetTop
       this.tabOffsetTop = this.$refs.tabControl2.$el.offsetTop;
     },
     /**

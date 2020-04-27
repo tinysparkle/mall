@@ -1,8 +1,8 @@
 <template>
   <div id="app">
-   <MainTabBar></MainTabBar>
-   <keep-alive>
-     <router-view></router-view>
+   <MainTabBar />
+   <keep-alive exclude="Detail">
+     <router-view />
    </keep-alive>
   </div>
 </template>

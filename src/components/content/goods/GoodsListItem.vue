@@ -1,12 +1,10 @@
 <template>
-  <div class="goodsItem">
-    <a :href="goodsItem.link">
+  <div class="goodsItem" @click="detail">
       <img :src="goodsItem.show.img" alt="" @load="imageLoad">
       <div class="goodsInfo">
         <p>{{goodsItem.title}}</p>
         <span class="price">{{goodsItem.price}}</span><span class="collect">{{goodsItem.cfav}}</span>
       </div>
-    </a>
   </div>
 </template>
 <script>
@@ -16,8 +14,13 @@ export default {
     goodsItem:Object
   },
   methods: {
+    // 时间总线侦听图片加载
     imageLoad(){
       this.$bus.$emit("imageLoadItem")
+    },
+    // 跳转到详情页
+    detail(){
+      this.$router.push("/detail/"+this.goodsItem.iid)
     }
   }
 }
